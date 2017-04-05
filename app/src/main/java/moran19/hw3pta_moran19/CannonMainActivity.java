@@ -1,5 +1,6 @@
 package moran19.hw3pta_moran19;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -48,6 +49,14 @@ public class CannonMainActivity extends AppCompatActivity implements View.OnTouc
     public boolean onTouch(View v, MotionEvent event) {
         if(event.getActionMasked() == MotionEvent.ACTION_DOWN)
         {
+            if(v.getId() == R.id.down)
+            {
+                v.setBackgroundColor(Color.RED);
+            }
+            else if(v.getId() == R.id.up)
+            {
+
+            }
             /*//updates seek bar values for each element, and updates text view
             for(int i = 1; i < 7; i++)
             {
