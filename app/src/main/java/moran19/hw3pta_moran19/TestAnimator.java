@@ -17,6 +17,15 @@ public class TestAnimator implements Animator {
     // instance variables
     private int count = 0; // counts the number of logical clock ticks
     private boolean goBackwards = false; // whether clock is ticking backwards
+    private int rotationAngle;
+    private Paint randPaint = new Paint();
+    private int initXPos = 90;
+    private int initYPos = 900;
+    private int currXPos;
+    private int currYPos;
+    private int xVelocity = 0;
+    private int yVelocity = 0;
+    private boolean isFire;
 
     /**
      * Interval between animation frames: .03 seconds (i.e., about 33 times
@@ -35,7 +44,7 @@ public class TestAnimator implements Animator {
      */
     public int backgroundColor() {
         // create/return the background color
-        return Color.rgb(180, 200, 255);
+        return Color.rgb(255, 255, 255);
     }
 
     /**
@@ -56,25 +65,43 @@ public class TestAnimator implements Animator {
     public void tick(Canvas g) {
         // bump our count either up or down by one, depending on whether
         // we are in "backwards mode".
-        if (goBackwards) {
-            count--;
-        } else {
-            count++;
-        }
+        count ++;
 
-        // Determine the pixel position of our ball.  Multiplying by 15
-        // has the effect of moving 15 pixel per frame.  Modding by 600
-        // (with the appropriate correction if the value was negative)
-        // has the effect of "wrapping around" when we get to either end
-        // (since our canvas size is 600 in each dimension).
-        int num = (count * 15) % 600;
-        if (num < 0) num += 600;
+        xVelocity = (int) Math.cos(rotationAngle);
+        yVelocity = (int) Math.sin(rotationAngle);
 
         // Draw the ball in the correct position.
         Paint redPaint = new Paint();
         redPaint.setColor(Color.RED);
-        g.drawCircle(num, num, 60, redPaint);
+
+
+        g.save();
+
+
+        g.drawCircle((float) (100+ (xVelocity*count)),(float) (100- (yVelocity*count) + (count*count)),30, randPaint); //cannonBall
+
+
+
+        g.drawCircle(300+count,250+count,90,randPaint); //target1
+        g.drawCircle(500-count,400-count,120, randPaint); //target2
+
+        g.rotate(-rotationAngle, 90, 900);
+        g.drawCircle(90,900,90,redPaint);
+        g.drawRect(90,850,200,950,redPaint);
+        g.restore();
+        //g.drawCircle(num, num, 60, redPaint);
     }
+
+    public void setRotationAngle(int angle)
+    {
+        this.rotationAngle = angle;
+    }
+
+    public void setIsFireBoolean(boolean fireBoolean)
+    {
+        this.isFire = fireBoolean;
+    }
+
 
     /**
      * Tells that we never pause.
@@ -101,6 +128,11 @@ public class TestAnimator implements Animator {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             goBackwards = !goBackwards;
         }
+    }
+
+    public Paint getRandPaint()
+    {
+        return randPaint;
     }
 }
 

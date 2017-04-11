@@ -12,15 +12,19 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class CannonMainActivity extends AppCompatActivity implements View.OnTouchListener{
+public class CannonMainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    TextView aimText;
-    TextView hitOrMissText;
-    ImageView myCanon;
-    ImageButton downButton;
-    ImageButton upButton;
-    Button fire;
-    AnimationCanvas myCanvas;
+    private TextView aimText;
+    private TextView hitOrMissText;
+    private ImageButton downButton;
+    private ImageButton upButton;
+    private Button fire;
+    private AnimationCanvas myCanvas;
+    private int rotationAngle;
+    private TestAnimator testAnim;
+    private int redVal;
+    private int greenVal;
+    private int blueVal;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,54 +34,53 @@ public class CannonMainActivity extends AppCompatActivity implements View.OnTouc
         //initialize my variables
         aimText = (TextView) findViewById(R.id.aim);
         hitOrMissText = (TextView) findViewById(R.id.hitOrMiss);
-        myCanon = (ImageView) findViewById(R.id.canon);
         downButton = (ImageButton) findViewById(R.id.down);
         upButton = (ImageButton) findViewById(R.id.up);
         fire = (Button) findViewById(R.id.shoot);
+        rotationAngle = 0;
 
+        //register listeners
+        downButton.setOnClickListener(this);
+        upButton.setOnClickListener(this);
+        fire.setOnClickListener(this);
 
         // Create an animation canvas and place it in the main layout
-        Animator testAnim = new TestAnimator();
+        testAnim = new TestAnimator();
         myCanvas = new AnimationCanvas(this, testAnim);
-        RelativeLayout mainLayout = (RelativeLayout) this
+        LinearLayout mainLayout = (LinearLayout) this
                 .findViewById(R.id.topLevelLayout);
         mainLayout.addView(myCanvas);
 
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if(event.getActionMasked() == MotionEvent.ACTION_DOWN)
+    public void onClick(View v) {
+        if(v.getId() == R.id.up)
         {
-            if(v.getId() == R.id.down)
+            if(rotationAngle < 90)
             {
-                v.setBackgroundColor(Color.RED);
+                rotationAngle = rotationAngle + 10;
             }
-            else if(v.getId() == R.id.up)
-            {
-
-            }
-            /*//updates seek bar values for each element, and updates text view
-            for(int i = 1; i < 7; i++)
-            {
-                tempElement = surface.elementArray[i];
-                tempColor = tempElement.getColor();
-
-                if(tempElement.containsPoint((int)motionEvent.getX(), (int)motionEvent.getY()))
-                {
-                    isTouched = i;
-                    surface.setIsTouched(i);
-                    textView.setText(tempElement.getName());
-
-
-                    redBar.setProgress((tempColor >> 16) & 255);
-                    greenBar.setProgress((tempColor >> 8) & 255);
-                    blueBar.setProgress(tempColor & 255);
-                }
-            }*/
+            testAnim.setRotationAngle(rotationAngle);
         }
-        myCanvas.invalidate();
-        return true;
+        else if(v.getId() == R.id.down)
+        {
+            if(rotationAngle > 0)
+            {
+                rotationAngle = rotationAngle - 10;
+            }
+            testAnim.setRotationAngle(rotationAngle);
+        }
+        else if(v.getId() == R.id.shoot)
+        {
+            redVal = (int)(255*Math.random());
+            greenVal = (int)(255*Math.random());
+            blueVal = (int)(255*Math.random());
+
+            testAnim.getRandPaint().setColor(Color.rgb(redVal, greenVal, blueVal));
+            testAnim.setIsFireBoolean(true);
+        }
+
     }
 
 }
