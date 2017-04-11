@@ -19,13 +19,18 @@ public class TestAnimator implements Animator {
     private boolean goBackwards = false; // whether clock is ticking backwards
     private int rotationAngle;
     private Paint randPaint = new Paint();
-    private int initXPos = 90;
-    private int initYPos = 900;
-    private int currXPos;
-    private int currYPos;
     private int xVelocity = 0;
     private int yVelocity = 0;
-    private boolean isFire;
+    private int ballInitXPos = 90;
+    private int ballInitYPos = 900;
+    private int ballXPos;
+    private int ballYPos;
+    private int target1XPos = 300;
+    private int target2XPos = 500;
+    private int target1YPos = 250;
+    private int target2YPos = 400;
+    private boolean isFire = false;
+
 
     /**
      * Interval between animation frames: .03 seconds (i.e., about 33 times
@@ -38,23 +43,13 @@ public class TestAnimator implements Animator {
     }
 
     /**
-     * The background color: a light blue.
+     * The background color: white
      *
      * @return the background color onto which we will draw the image.
      */
     public int backgroundColor() {
         // create/return the background color
         return Color.rgb(255, 255, 255);
-    }
-
-    /**
-     * Tells the animation whether to go backwards.
-     *
-     * @param b true iff animation is to go backwards.
-     */
-    public void goBackwards(boolean b) {
-        // set our instance variable
-        goBackwards = b;
     }
 
     /**
@@ -66,9 +61,10 @@ public class TestAnimator implements Animator {
         // bump our count either up or down by one, depending on whether
         // we are in "backwards mode".
         count ++;
-
-        xVelocity = (int) Math.cos(rotationAngle);
+        /*xVelocity = (int) Math.cos(rotationAngle);
         yVelocity = (int) Math.sin(rotationAngle);
+        ballXPos = ballInitXPos + xVelocity*count;
+        ballYPos = ballInitYPos - yVelocity*count + 5*count*count;*/
 
         // Draw the ball in the correct position.
         Paint redPaint = new Paint();
@@ -77,18 +73,32 @@ public class TestAnimator implements Animator {
 
         g.save();
 
+        if(isFire == true)
+        {
+            xVelocity = (int) Math.cos(rotationAngle);
+            yVelocity = (int) Math.sin(rotationAngle);
+            ballXPos = ballInitXPos + xVelocity*5*count;
+            ballYPos = ballInitYPos - yVelocity*count;
+            g.drawCircle(ballXPos, ballYPos,30,randPaint); //cannonBall
 
-        g.drawCircle((float) (100+ (xVelocity*count)),(float) (100- (yVelocity*count) + (count*count)),30, randPaint); //cannonBall
+        }
+
+        if(ballXPos > 2000)
+        {
+            isFire = false;
+        }
 
 
 
-        g.drawCircle(300+count,250+count,90,randPaint); //target1
-        g.drawCircle(500-count,400-count,120, randPaint); //target2
+
+        g.drawCircle(target1XPos+count,target1YPos+count,90,randPaint); //target1
+        g.drawCircle(target2XPos-count,target2YPos-count,120, randPaint); //target2
 
         g.rotate(-rotationAngle, 90, 900);
         g.drawCircle(90,900,90,redPaint);
         g.drawRect(90,850,200,950,redPaint);
         g.restore();
+
         //g.drawCircle(num, num, 60, redPaint);
     }
 
@@ -97,10 +107,6 @@ public class TestAnimator implements Animator {
         this.rotationAngle = angle;
     }
 
-    public void setIsFireBoolean(boolean fireBoolean)
-    {
-        this.isFire = fireBoolean;
-    }
 
 
     /**
@@ -126,13 +132,18 @@ public class TestAnimator implements Animator {
      */
     public void onTouch(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            goBackwards = !goBackwards;
+
         }
     }
 
     public Paint getRandPaint()
     {
         return randPaint;
+    }
+
+    public void setFireBoolean(boolean fire)
+    {
+        isFire = fire;
     }
 }
 

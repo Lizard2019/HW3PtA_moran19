@@ -78,7 +78,7 @@ public class CannonMainActivity extends AppCompatActivity implements View.OnClic
             blueVal = (int)(255*Math.random());
 
             testAnim.getRandPaint().setColor(Color.rgb(redVal, greenVal, blueVal));
-            testAnim.setIsFireBoolean(true);
+            testAnim.setFireBoolean(true);
         }
 
     }
